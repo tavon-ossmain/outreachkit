@@ -106,8 +106,8 @@ $19 one-time → [LINK]
 - [x] Build landing page
 - [x] Write ad copy
 - [ ] Deploy to Vercel (free)
-- [ ] Set up Gumroad or LemonSqueezy for payments ($19 product)
-- [ ] Connect payment link to landing page CTA buttons
+- [x] Set up Whop for payments ($19 product)
+- [x] Connect payment link to landing page CTA buttons
 
 **Day 3-4:**
 - [ ] Post organically on r/SideProject (free)

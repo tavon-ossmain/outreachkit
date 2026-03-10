@@ -27,7 +27,7 @@ Brand voice: Direct, practical, slightly irreverent. We speak from experience.
 Never be pushy or spammy. Provide value first, mention the product naturally.
 
 Product URL: [YOUR VERCEL URL]
-Gumroad URL: [YOUR GUMROAD URL]
+Whop URL: https://whop.com/outreachkit-ab27/outreachkit-cold-outreach-system
 Price: $19 one-time
 
 Target audience: Technical founders starting AI agencies who are great at building but bad at sales.
@@ -118,7 +118,7 @@ open http://localhost:3100
 
 ### DevBot — First Tasks:
 1. "Initialize git repo and deploy to Vercel"
-2. "Wire Gumroad payment link into all CTA buttons on landing.html"
+2. "Wire Whop payment link into all CTA buttons on landing.html"
 3. "Add Google Analytics or Plausible analytics tracking"
 
 ### QABot — First Tasks:
