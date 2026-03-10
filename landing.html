@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OutreachKit — The Sales System for AI Agency Founders</title>
+  <meta name="description" content="Stop guessing how to sell your AI services. Get a battle-tested outreach system — cold emails, LinkedIn DMs, proposals, pricing, and objection handlers — tailored to your AI agency in 60 seconds." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050506;
+      --surface: #0e0e11;
+      --surface-2: #161619;
+      --surface-3: #1e1e22;
+      --border: #222228;
+      --border-light: #2e2e36;
+      --text: #ededf0;
+      --text-mid: #b0b0bc;
+      --text-dim: #71717e;
+      --accent: #7c6aef;
+      --accent-bright: #9584ff;
+      --accent-glow: rgba(124, 106, 239, 0.08);
+      --accent-glow-strong: rgba(124, 106, 239, 0.18);
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.12);
+      --red: #f87171;
+      --red-dim: rgba(248, 113, 113, 0.1);
+      --orange: #fb923c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 740px; margin: 0 auto; padding: 0 24px; }
+
+    /* ======= NAV ======= */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(5, 5, 6, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(34, 34, 40, 0.5);
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-cta {
+      padding: 8px 20px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .nav-cta:hover { background: var(--accent-bright); }
+
+    /* ======= HERO ======= */
+    .hero {
+      text-align: center;
+      padding: 140px 24px 80px;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124, 106, 239, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-glow);
+      color: var(--accent-bright);
+      border: 1px solid rgba(124, 106, 239, 0.2);
+      padding: 7px 18px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 28px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent-bright) 0%, #c084fc 50%, var(--orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero .subtitle {
+      font-size: 18px;
+      color: var(--text-mid);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .hero .cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--accent) 0%, #6344e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: all 0.2s;
+      box-shadow: 0 0 40px rgba(124, 106, 239, 0.25), 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .btn-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(124, 106, 239, 0.35), 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .btn-hero svg { width: 18px; height: 18px; }
+    .hero-meta {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ======= STATS BAR ======= */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 32px 24px;
+    }
+    .stats-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+    .stat-item { flex: 1; }
+    .stat-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* ======= SECTIONS ======= */
+    .section {
+      padding: 80px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .section-eyebrow {
+      color: var(--accent-bright);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      line-height: 1.15;
+    }
+    .section .lead {
+      color: var(--text-mid);
+      font-size: 17px;
+      margin-bottom: 32px;
+      max-width: 560px;
+    }
+
+    /* ======= PAIN POINTS ======= */
+    .pain-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 32px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .pain-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      background: var(--surface);
+      font-size: 15px;
+      transition: background 0.15s;
+    }
+    .pain-row:hover { background: var(--surface-2); }
+    .pain-x {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--red-dim);
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ======= FEATURE CARDS ======= */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .f-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: all 0.2s;
+    }
+    .f-card:hover {
+      border-color: var(--border-light);
+      background: var(--surface-2);
+    }
+    .f-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-glow-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    .f-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .f-card p {
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ======= HOW IT WORKS ======= */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 32px;
+    }
+    .step {
+      display: flex;
+      gap: 20px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, #6344e7 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .step-content h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      color: var(--text-dim);
+      font-size: 15px;
+    }
+
+    /* ======= PRICING ======= */
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+      margin-top: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .price-card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #c084fc, var(--orange));
+    }
+    .price-badge {
+      display: inline-block;
+      background: rgba(251, 146, 60, 0.12);
+      color: var(--orange);
+      border: 1px solid rgba(251, 146, 60, 0.2);
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .price-old {
+      font-size: 22px;
+      color: var(--text-dim);
+      text-decoration: line-through;
+      margin-bottom: 4px;
+    }
+    .price-amount {
+      font-size: 64px;
+      font-weight: 900;
+      letter-spacing: -3px;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+    .price-note {
+      color: var(--text-dim);
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+    .price-list {
+      text-align: left;
+      max-width: 380px;
+      margin: 0 auto 32px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .price-list li {
+      padding: 10px 16px;
+      font-size: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--surface-2);
+      border-radius: 8px;
+    }
+    .price-check {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .btn-buy {
+      display: block;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      padding: 18px 32px;
+      background: linear-gradient(135deg, var(--accent) 0%, #6344e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: all 0.2s;
+      box-shadow: 0 0 40px rgba(124, 106, 239, 0.2);
+    }
+    .btn-buy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(124, 106, 239, 0.3);
+    }
+    .guarantee-box {
+      margin-top: 28px;
+      background: var(--green-dim);
+      border: 1px solid rgba(52, 211, 153, 0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .guarantee-box h4 {
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .guarantee-box p {
+      color: var(--text-mid);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ======= FAQ ======= */
+    .faq-list { margin-top: 32px; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .faq-a {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ======= FINAL CTA ======= */
+    .final-cta {
+      text-align: center;
+      padding: 80px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      position: relative;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(124, 106, 239, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta h2 {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    .final-cta p {
+      color: var(--text-mid);
+      font-size: 17px;
+      margin-bottom: 28px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px 24px;
+      color: var(--text-dim);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ======= RESPONSIVE ======= */
+    @media (max-width: 640px) {
+      .hero { padding: 120px 20px 60px; }
+      .hero h1 { font-size: 36px; letter-spacing: -1.5px; }
+      .hero .subtitle { font-size: 16px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .section h2 { font-size: 28px; }
+      .stats-inner { flex-wrap: wrap; gap: 20px; }
+      .stat-item { flex: 0 0 45%; }
+      .price-amount { font-size: 48px; }
+      .price-card { padding: 32px 24px; }
+      .nav { padding: 12px 16px; }
+      .final-cta h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-logo">Outreach<span>Kit</span></div>
+    <a href="https://whop.com/outreachkit-ab27/outreachkit-cold-outreach-system" class="nav-cta">Get it — $19</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Built for AI agency founders
+    </div>
+    <h1>You build AI products.<br/><span class="gradient">We help you sell them.</span></h1>
+    <p class="subtitle">The battle-tested outreach system for AI agencies. Cold emails, LinkedIn DMs, proposals, pricing frameworks, and objection handlers — customized to your service in 60 seconds.</p>
+    <div class="cta-group">
+      <a href="https://whop.com/outreachkit-ab27/outreachkit-cold-outreach-system" class="btn-hero">
+        Get OutreachKit — $19
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+      </a>
+      <div class="hero-meta">
+        <span>&#10003; One-time purchase</span>
+        <span>&#10003; No subscription</span>
+        <span>&#10003; Instant access</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Cold emails</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">DM scripts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Objection killers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">60s</div>
+        <div class="stat-label">To generate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="section">
+    <div class="container">
+      <div class="section-eyebrow">The real problem</div>
+      <h2>Technical founders are terrible at outreach. That's not an insult — it's a $50K/year blind spot.</h2>
+      <p class="lead">You can architect an AI chatbot in a weekend. But ask you to write a cold email and you'll stare at Gmail for 40 minutes, type three sentences, delete them, and open Twitter instead.</p>
+      <div class="pain-grid">
+        <div class="pain-row">
+          <span class="pain-x">&#10005;</span>
+          <span>Your cold emails read like a Wikipedia article about your product</span>
+        </div>
+        <div class="pain-row">
+          <span class="pain-x">&#10005;</span>
+          <span>Your LinkedIn DMs start with "Hi, I noticed your profile" and end in silence</span>
+        </div>
+        <div class="pain-row">
+          <span class="pain-x">&#10005;</span>
+          <span>You charge $500 for work that should cost $5,000 because pricing feels awkward</span>
+        </div>
+        <div class="pain-row">
+          <span class="pain-x">&#10005;</span>
+          <span>When a prospect says "too expensive" you panic-discount to half</span>
+        </div>
+        <div class="pain-row">
+          <span class="pain-x">&#10005;</span>
+          <span>You've sent exactly zero proposals because you don't know what one looks like</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section class="section">
+    <div class="container">
+      <div class="section-eyebrow">What you get</div>
+      <h2>A complete sales system you can deploy tonight</h2>
+      <p class="lead">Not a course. Not a guide. A ready-to-use outreach machine — tailored to your exact AI service and target industry.</p>
+      <div class="features-grid">
+        <div class="f-card">
+          <div class="f-card-icon">&#9993;</div>
+          <h3>5-Email Cold Sequence</h3>
+          <p>Each email builds urgency and curiosity. From the first hook to the "final note" breakup email that gets the most replies.</p>
+        </div>
+        <div class="f-card">
+          <div class="f-card-icon">&#128172;</div>
+          <h3>3 LinkedIn DM Scripts</h3>
+          <p>Conversational openers that don't get you flagged as spam. Written to start real conversations, not pitches.</p>
+        </div>
+        <div class="f-card">
+          <div class="f-card-icon">&#128196;</div>
+          <h3>Client Proposal Template</h3>
+          <p>Problem, solution, timeline, investment. Professional format that makes you look like you've done this a hundred times.</p>
+        </div>
+        <div class="f-card">
+          <div class="f-card-icon">&#128176;</div>
+          <h3>3-Tier Pricing Framework</h3>
+          <p>Starter, Growth, Enterprise. Anchored correctly so prospects pick the middle option. No more undercharging.</p>
+        </div>
+        <div class="f-card">
+          <div class="f-card-icon">&#128737;</div>
+          <h3>5 Objection Handlers</h3>
+          <p>Word-for-word responses to "too expensive," "we tried AI before," "we're too small," and more. Memorize these.</p>
+        </div>
+        <div class="f-card">
+          <div class="f-card-icon">&#127919;</div>
+          <h3>Tailored to 4 AI Services</h3>
+          <p>Chatbots, workflow automation, content creation, or data analytics. Pick yours — everything adapts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <div class="section-eyebrow">How it works</div>
+      <h2>60 seconds from "I don't know what to say" to "sending now"</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Pick your AI service</h3>
+            <p>Chatbots, automation, content, or analytics. The system adapts everything to match.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Enter your target industry</h3>
+            <p>Real estate, e-commerce, healthcare, SaaS — wherever your ideal clients are.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Copy, paste, send</h3>
+            <p>Get your full outreach system: emails, DMs, proposal, pricing, and objection handlers. Ready to use.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-eyebrow">Pricing</div>
+      <h2>One payment. No recurring fees. No upsells.</h2>
+      <div class="price-card">
+        <div class="price-badge">LAUNCH PRICE — 60% OFF</div>
+        <div class="price-old">$49</div>
+        <div class="price-amount">$19</div>
+        <div class="price-note">One-time purchase. Yours forever.</div>
+        <ul class="price-list">
+          <li><span class="price-check">&#10003;</span> 5-email cold outreach sequence</li>
+          <li><span class="price-check">&#10003;</span> 3 LinkedIn DM scripts</li>
+          <li><span class="price-check">&#10003;</span> Professional client proposal template</li>
+          <li><span class="price-check">&#10003;</span> 3-tier pricing framework with rates</li>
+          <li><span class="price-check">&#10003;</span> 5 objection handlers (word-for-word)</li>
+          <li><span class="price-check">&#10003;</span> Customized for 4 AI service categories</li>
+          <li><span class="price-check">&#10003;</span> Copy-paste ready — use in 60 seconds</li>
+          <li><span class="price-check">&#10003;</span> Free updates as new templates drop</li>
+        </ul>
+        <a href="https://whop.com/outreachkit-ab27/outreachkit-cold-outreach-system" class="btn-buy">Get OutreachKit — $19</a>
+        <div class="guarantee-box">
+          <h4>30-Day Money-Back Guarantee</h4>
+          <p>Use OutreachKit for 30 days. If it doesn't help you book at least one meeting, email us and we'll refund every cent. No questions, no hassle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-eyebrow">FAQ</div>
+      <h2>Quick answers</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">Isn't this just ChatGPT with extra steps?</div>
+          <div class="faq-a">No. These aren't AI-generated fluff. Every template is built on proven cold outreach frameworks that have actually closed AI agency deals. The structure, psychology, and sequencing are what make them work — not word count.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">I haven't started my AI agency yet. Too early?</div>
+          <div class="faq-a">Perfect timing, actually. Most agencies fail because they build first and sell never. OutreachKit gives you the sales infrastructure from day one — so you can land clients before you even have a portfolio.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">My AI service isn't one of the four categories. Will this work?</div>
+          <div class="faq-a">The four categories (chatbots, automation, content, analytics) cover 90% of AI agencies. But even if yours is different, the frameworks, email structures, and objection handlers translate directly. Sales psychology doesn't change by niche.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Do I need any tools or subscriptions to use this?</div>
+          <div class="faq-a">No. Everything is copy-paste. Use it with Gmail, LinkedIn, Notion, Google Docs — whatever you already have. Zero dependencies.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">What if it doesn't work for me?</div>
+          <div class="faq-a">Then you get your money back. 30-day guarantee, no questions asked. We can afford to offer this because the templates consistently deliver results.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Your next AI client is one<br/>cold email away.</h2>
+    <p>Stop overthinking. Start sending.</p>
+    <a href="https://whop.com/outreachkit-ab27/outreachkit-cold-outreach-system" class="btn-hero" style="display: inline-flex;">
+      Get OutreachKit — $19
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+    </a>
+  </section>
+
+  <div class="footer">
+    &copy; 2026 OutreachKit. Built for AI agency founders who'd rather close deals than write emails.
+  </div>
+
+</body>
+</html>
