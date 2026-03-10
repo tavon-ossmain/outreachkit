@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OutreachKit — Cold Outreach System for AI Agency Founders</title>
+  <meta name="description" content="Get a complete cold outreach system tailored to your AI agency. Cold emails, LinkedIn DMs, proposals, pricing, and objection handlers — ready in 60 seconds." />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --surface-2: #1c1c20;
+      --border: #2a2a2f;
+      --text: #e8e8ec;
+      --text-dim: #8b8b96;
+      --accent: #6c5ce7;
+      --accent-hover: #7c6ef7;
+      --accent-glow: rgba(108, 92, 231, 0.15);
+      --green: #2ecc71;
+      --orange: #f39c12;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .header .badge {
+      display: inline-block;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, #a8a8b3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header p {
+      color: var(--text-dim);
+      font-size: 18px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Form */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .form-card h2 {
+      font-size: 20px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group select { cursor: pointer; }
+    .form-group select option { background: var(--surface-2); }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .header h1 { font-size: 28px; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* Output sections */
+    .output-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .output-header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .output-header:hover { background: var(--surface-2); }
+    .output-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .output-header .count {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .output-header .chevron {
+      color: var(--text-dim);
+      transition: transform 0.2s;
+      font-size: 18px;
+    }
+    .output-header .chevron.open { transform: rotate(180deg); }
+    .output-body { padding: 0 24px 24px; }
+    .output-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .output-item:last-child { margin-bottom: 0; }
+    .output-item h4 {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .output-item p, .output-item li {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .output-item ul { padding-left: 20px; }
+    .output-item li { margin-bottom: 4px; }
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    .subject-line {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--surface-2);
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .tab:hover:not(.active) { color: var(--text); }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-dim);
+    }
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Pricing banner */
+    .pricing-bar {
+      background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+      text-align: center;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 32px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .pricing-bar span {
+      text-decoration: line-through;
+      opacity: 0.7;
+      margin-right: 8px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-dim);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useCallback } = React;
+
+    // ========== TEMPLATE DATA ==========
+    const TEMPLATES = {
+      chatbot: {
+        label: "AI Chatbot / Customer Support",
+        emails: [
+          {
+            subject: "Quick question about {{company}}'s customer support",
+            body: `Hi {{firstName}},\n\nI noticed {{company}} is growing fast — congrats. With that growth, I imagine your support team is handling a lot more volume.\n\nWe build AI chatbots that handle 60-80% of routine customer questions automatically — things like order status, FAQs, and account issues. Our clients typically see response times drop from hours to seconds.\n\nWould it make sense to chat for 15 minutes this week? I can show you exactly how this would work for {{industry}}.\n\nBest,\n{{yourName}}`
+          },
+          {
+            subject: "Re: {{company}}'s support volume",
+            body: `Hi {{firstName}},\n\nJust following up on my last note. I know things get busy.\n\nOne quick stat that might be relevant: our last {{industry}} client reduced their support ticket volume by 65% within the first month of deploying an AI chatbot — without losing any customer satisfaction scores.\n\nHappy to share the specifics if you're interested.\n\n{{yourName}}`
+          },
+          {
+            subject: "Idea for {{company}}",
+            body: `Hi {{firstName}},\n\nI had a thought specifically about {{company}} — based on what I've seen in your {{industry}} space, you're probably spending ${{estimatedCost}}+/month on support staff handling repetitive questions.\n\nWhat if you could cut that by half and give your customers instant answers 24/7?\n\nI put together a quick 2-minute breakdown of how this would work for {{company}} specifically. Want me to send it over?\n\n{{yourName}}`
+          },
+          {
+            subject: "Last note from me",
+            body: `Hi {{firstName}},\n\nI'll keep this short — I've reached out a couple of times about helping {{company}} automate customer support with AI.\n\nIf the timing isn't right, totally understand. But if you ever want to explore it, here's what we typically deliver:\n\n• AI chatbot handling 60-80% of inbound questions\n• 2-week deployment timeline\n• No disruption to your existing support team\n\nEither way, I wish you and {{company}} the best.\n\n{{yourName}}`
+          },
+          {
+            subject: "{{firstName}}, one more thing",
+            body: `Hi {{firstName}},\n\nI realized I never mentioned — we offer a free pilot where we build and deploy a chatbot for {{company}} at no cost. If it doesn't perform, you owe nothing.\n\nThe only reason I can offer this is because the results consistently speak for themselves.\n\nWorth a 10-minute call to see if it's a fit?\n\n{{yourName}}`
+          }
+        ],
+        dms: [
+          `Hey {{firstName}} — saw you're running {{company}} in the {{industry}} space. Quick question: are you handling customer support manually right now, or have you explored AI chatbots? We help companies like yours automate 60-80% of support tickets. Happy to share how if you're curious.`,
+          `Hi {{firstName}}, not trying to sell you anything — just genuinely curious. How is {{company}} handling the support volume as you scale? We've been working with a few {{industry}} companies on AI chatbots and the results have been wild. Would love to swap notes if you're open to it.`,
+          `{{firstName}} — congrats on what you're building at {{company}}. I help {{industry}} businesses deploy AI chatbots that handle routine customer questions automatically. If support costs are on your mind, might be worth a quick chat. No pressure either way.`
+        ],
+        proposal: `# AI Chatbot Proposal for {{company}}\n\n## The Problem\n{{company}} is experiencing growing customer support volume. Manual handling leads to slower response times, higher costs, and inconsistent quality.\n\n## The Solution\nA custom AI chatbot trained on {{company}}'s specific products, policies, and FAQs. Deployed across your website, app, and messaging channels.\n\n## What You Get\n- Custom-trained AI chatbot for {{company}}\n- Integration with your existing support tools\n- 24/7 automated responses for routine questions\n- Seamless handoff to human agents for complex issues\n- Analytics dashboard tracking resolution rates\n\n## Timeline\n- Week 1: Discovery & training data collection\n- Week 2: Bot development & testing\n- Week 3: Deployment & optimization\n\n## Investment\n{{pricingTier}}\n\n## Guarantee\nIf the chatbot doesn't handle at least 50% of routine queries within 30 days, you get a full refund.`,
+        objections: [
+          { objection: "We already have a support team", response: "That's great — the chatbot isn't replacing them. It handles the repetitive stuff (order status, FAQs, password resets) so your team can focus on complex issues that actually need a human touch. Most clients see their support team become more effective, not smaller." },
+          { objection: "AI chatbots give bad answers", response: "Generic ones do. Ours is trained specifically on your company's data — your products, your policies, your tone. And any question it can't handle gets seamlessly routed to your human team. Think of it as your best FAQ page, but conversational." },
+          { objection: "It's too expensive", response: "Let's do the math: if you're paying a support rep $4,000/month and the chatbot handles 60% of their workload, that's $2,400/month in recovered capacity. Our solution typically costs a fraction of that. It usually pays for itself in month one." },
+          { objection: "We're too small for this", response: "Actually, smaller companies benefit the most. You don't have the budget for a 10-person support team, but your customers still expect fast answers. The chatbot gives you enterprise-level support on a startup budget." },
+          { objection: "How long does implementation take?", response: "Two weeks from kickoff to live deployment. Week one is gathering your training data (FAQs, product docs, common questions). Week two is building, testing, and deploying. We handle 90% of the work — your team just reviews and approves." }
+        ],
+        pricing: {
+          low: "$1,500 - $3,000/month",
+          mid: "$3,000 - $6,000/month",
+          high: "$6,000 - $12,000/month",
+          note: "Starter covers basic FAQ automation. Growth adds multi-channel deployment and analytics. Enterprise includes custom integrations, priority support, and advanced training."
+        }
+      },
+
+      automation: {
+        label: "AI Workflow Automation",
+        emails: [
+          {
+            subject: "{{company}} — quick thought on your workflows",
+            body: `Hi {{firstName}},\n\nI've been researching companies in the {{industry}} space, and {{company}} caught my eye.\n\nMost {{industry}} businesses we talk to are spending 20-30 hours/week on repetitive tasks — data entry, report generation, email follow-ups, invoice processing. Our AI automation solutions typically cut that down to 2-3 hours.\n\nWould a quick 15-minute call make sense to see if there's a fit?\n\n{{yourName}}`
+          },
+          {
+            subject: "Re: workflow automation for {{company}}",
+            body: `Hi {{firstName}},\n\nFollowing up — I know {{industry}} moves fast and things fall through the cracks.\n\nHere's a concrete example: we recently helped a {{industry}} company automate their client onboarding process. What used to take 4 hours per client now takes 15 minutes. That's 200+ hours saved per quarter.\n\nHappy to walk you through how it works.\n\n{{yourName}}`
+          },
+          {
+            subject: "What's costing {{company}} the most time?",
+            body: `Hi {{firstName}},\n\nGenuine question — if you could wave a magic wand and eliminate one repetitive task at {{company}}, what would it be?\n\nI ask because that's literally what we do. We identify the workflows eating up your team's time and build AI automations that handle them end-to-end.\n\nNo magic wand needed — just a 15-minute chat to identify the opportunity.\n\n{{yourName}}`
+          },
+          {
+            subject: "Last thought on {{company}}'s operations",
+            body: `Hi {{firstName}},\n\nFinal note from me. Here's what we typically automate for {{industry}} companies:\n\n• Client onboarding workflows\n• Report generation and data entry\n• Email sequences and follow-ups\n• Invoice processing and reconciliation\n\nIf any of those are eating your team's time, I'd love to help. If not, no hard feelings — I wish {{company}} the best.\n\n{{yourName}}`
+          },
+          {
+            subject: "Free automation audit for {{company}}",
+            body: `Hi {{firstName}},\n\nI realized I should just lead with this — we offer a free automation audit where we map out your top 3 time-wasting workflows and show you exactly how AI would handle them.\n\nTakes 30 minutes, and you walk away with a concrete plan whether you work with us or not.\n\nWorth it?\n\n{{yourName}}`
+          }
+        ],
+        dms: [
+          `Hey {{firstName}} — I help {{industry}} companies automate their most time-consuming workflows with AI. Think data entry, reporting, onboarding, follow-ups — all the stuff that eats hours but doesn't need a human. Would you be open to a quick chat about what's taking up the most time at {{company}}?`,
+          `Hi {{firstName}}, not trying to pitch — just curious. What's the most repetitive task your team deals with at {{company}}? We've been automating workflows for {{industry}} companies and I'm always interested in hearing what the real pain points are.`,
+          `{{firstName}} — saw what you're building at {{company}}. We help {{industry}} businesses save 20+ hours/week by automating repetitive workflows with AI. If operations efficiency is on your radar, happy to share some ideas specific to your space.`
+        ],
+        proposal: `# AI Workflow Automation Proposal for {{company}}\n\n## The Problem\n{{company}}'s team is spending significant hours on repetitive operational tasks that don't require human judgment — reducing capacity for high-value work.\n\n## The Solution\nCustom AI automations that handle your most time-consuming workflows end-to-end, with human oversight where needed.\n\n## What You Get\n- Workflow audit identifying top automation opportunities\n- Custom-built AI automations for 3-5 core workflows\n- Integration with your existing tools (CRM, email, spreadsheets)\n- Dashboard for monitoring automation performance\n- Training for your team on managing automations\n\n## Timeline\n- Week 1: Workflow audit & automation mapping\n- Week 2-3: Build & test automations\n- Week 4: Deploy & optimize\n\n## Investment\n{{pricingTier}}\n\n## Guarantee\nIf automations don't save at least 15 hours/week within 30 days, we'll refine them at no additional cost until they do.`,
+        objections: [
+          { objection: "Our processes are too complex to automate", response: "We hear this a lot, and it's almost never true. We're not automating your entire operation — we're targeting the repetitive sub-tasks within your processes. The parts where someone is copying data between systems, generating the same reports, or sending templated emails. The complex judgment calls stay with your team." },
+          { objection: "We've tried automation before and it didn't work", response: "Most automation failures come from trying to boil the ocean. We start with one workflow, prove the ROI, then expand. And AI automation is fundamentally different from old-school rule-based tools — it can handle variations and edge cases that would break traditional automation." },
+          { objection: "My team won't adopt it", response: "Our automations work in the background — your team doesn't need to learn new software. The automation plugs into the tools they already use. Most team members love it because it eliminates the boring parts of their job." },
+          { objection: "What about errors?", response: "Every automation includes human review checkpoints for critical decisions. The AI handles the grunt work, but a human approves anything high-stakes. Error rates are typically lower than manual processes because the AI doesn't get tired or distracted." },
+          { objection: "Can't justify the cost right now", response: "Let's put it this way: if your team spends 20 hours/week on tasks we automate, and your average loaded employee cost is $40/hour, that's $3,200/month in recovered time. Our solution pays for itself within the first month." }
+        ],
+        pricing: {
+          low: "$2,000 - $5,000 one-time + $500/month",
+          mid: "$5,000 - $10,000 one-time + $1,000/month",
+          high: "$10,000 - $25,000 one-time + $2,000/month",
+          note: "Starter covers 1-2 workflow automations. Growth covers 3-5 workflows with integrations. Enterprise includes unlimited workflows, priority support, and custom development."
+        }
+      },
+
+      content: {
+        label: "AI Content Creation",
+        emails: [
+          {
+            subject: "{{company}}'s content — quick idea",
+            body: `Hi {{firstName}},\n\nI've been following {{company}} and noticed you're doing great work in the {{industry}} space. One thing I noticed: your content output could be 10x what it is without adding headcount.\n\nWe build AI content systems for {{industry}} companies — think blog posts, social media, newsletters, and SEO content, all in your brand voice, produced at scale.\n\nWorth a 15-minute chat to see if it fits?\n\n{{yourName}}`
+          },
+          {
+            subject: "How {{industry}} companies are scaling content",
+            body: `Hi {{firstName}},\n\nQuick follow-up. I wanted to share something specific: one of our {{industry}} clients went from publishing 4 blog posts/month to 30 — without hiring a single writer. Their organic traffic tripled in 90 days.\n\nThe key is an AI content system trained on their brand voice, not generic ChatGPT output.\n\nHappy to show you how it works.\n\n{{yourName}}`
+          },
+          {
+            subject: "Content ROI for {{company}}",
+            body: `Hi {{firstName}},\n\nI'll cut to the chase — if {{company}} is spending $2,000-5,000/month on freelance writers or an agency for content, we can deliver 3-5x the output for the same budget. And it sounds like you, not a freelancer.\n\nThe secret is building a custom AI content engine trained on your existing best content.\n\nInterested in seeing a sample?\n\n{{yourName}}`
+          },
+          {
+            subject: "Sample content for {{company}}",
+            body: `Hi {{firstName}},\n\nI went ahead and created a sample blog post outline for {{company}} using our AI system — based on what I could find publicly about your brand and industry.\n\nNo strings attached. If you'd like to see it, just reply and I'll send it over.\n\nIf nothing else, it might give you some content ideas.\n\n{{yourName}}`
+          },
+          {
+            subject: "{{firstName}}, closing the loop",
+            body: `Hi {{firstName}},\n\nLast note from me on this. Here's what we offer {{industry}} companies:\n\n• AI-generated blog posts, social content, and newsletters\n• Trained on your brand voice and style\n• SEO-optimized for your target keywords\n• Human review included before publishing\n\nIf content is a priority for {{company}} in the next quarter, I'd love to help. If not, all good.\n\n{{yourName}}`
+          }
+        ],
+        dms: [
+          `Hey {{firstName}} — noticed {{company}} is doing cool stuff in {{industry}}. Quick question: are you handling content creation in-house or outsourcing? We build AI content systems that produce blog posts, social content, and newsletters in your brand voice at scale. Happy to share how it works.`,
+          `Hi {{firstName}}, genuine question — how's {{company}} approaching content marketing right now? We've been helping {{industry}} companies 10x their content output using custom AI systems (not generic ChatGPT). Would love to hear what's working for you and share some ideas.`,
+          `{{firstName}} — congrats on the growth at {{company}}. We help {{industry}} businesses scale their content without scaling their team. If content production is a bottleneck, I've got some ideas that might help. No pitch — just a quick conversation.`
+        ],
+        proposal: `# AI Content System Proposal for {{company}}\n\n## The Problem\n{{company}} needs consistent, high-quality content to drive growth, but producing it manually is expensive, slow, and doesn't scale.\n\n## The Solution\nA custom AI content engine trained on {{company}}'s brand voice, producing blog posts, social media content, newsletters, and SEO content at scale.\n\n## What You Get\n- AI content system trained on your brand voice\n- Monthly content calendar with SEO-optimized topics\n- Blog posts, social content, and newsletter drafts\n- Human editorial review before publishing\n- Performance tracking and optimization\n\n## Timeline\n- Week 1: Brand voice analysis & content audit\n- Week 2: AI system training & first batch\n- Week 3: Review, refine, and launch content calendar\n\n## Investment\n{{pricingTier}}\n\n## Guarantee\nIf you're not satisfied with the content quality after the first month, we'll refund you in full.`,
+        objections: [
+          { objection: "AI content sounds generic", response: "Generic AI content is generic because it's not trained on anything specific. Our system is trained on your existing content, your brand guidelines, and your audience's language. The result sounds like your best writer on their best day — consistently." },
+          { objection: "We need a human touch", response: "Every piece goes through human review before publishing. The AI handles the heavy lifting — research, drafting, SEO optimization — and your team handles the final polish. You get 10x the output with the same human quality bar." },
+          { objection: "We tried AI content and it was bad", response: "If you used ChatGPT or a generic tool, that makes sense. Those aren't trained on your brand. Our system is custom-built for {{company}} — your voice, your audience, your topics. It's like the difference between a temp worker and a trained employee." },
+          { objection: "SEO takes too long to show results", response: "You're right that SEO compounds over time. But here's the thing: the cost of waiting is also compounding. Every month without content is a month your competitors are ranking above you. Our clients typically see meaningful traffic increases within 60-90 days." },
+          { objection: "We don't have budget for this", response: "What are you spending now on content? Freelancers typically charge $200-500 per blog post. At 8 posts/month, that's $1,600-4,000. We deliver 20-30 posts/month for a similar budget. The question isn't whether you can afford it — it's whether you can afford to produce less." }
+        ],
+        pricing: {
+          low: "$1,000 - $2,000/month",
+          mid: "$2,000 - $5,000/month",
+          high: "$5,000 - $10,000/month",
+          note: "Starter covers blog content only. Growth adds social media and newsletters. Enterprise includes full content operations with dedicated editorial support."
+        }
+      },
+
+      analytics: {
+        label: "AI Data Analytics / Insights",
+        emails: [
+          {
+            subject: "{{company}} — are you using your data?",
+            body: `Hi {{firstName}},\n\nQuick question: does {{company}} have data sitting in spreadsheets, dashboards, or databases that nobody has time to analyze properly?\n\nWe build AI analytics systems that turn raw business data into actionable insights — automatically. No more waiting for quarterly reports or hiring data analysts.\n\nWorth a quick chat to see if there's an opportunity?\n\n{{yourName}}`
+          },
+          {
+            subject: "Re: data insights for {{company}}",
+            body: `Hi {{firstName}},\n\nFollowing up — here's a concrete example. We recently helped a {{industry}} company connect their sales, marketing, and operations data into a single AI-powered dashboard. Within a week, it surfaced $200K in revenue opportunities they didn't know existed.\n\nThe data was always there. They just needed AI to connect the dots.\n\nHappy to show you how it works for {{industry}}.\n\n{{yourName}}`
+          },
+          {
+            subject: "What decisions is {{company}} making blind?",
+            body: `Hi {{firstName}},\n\nEvery business has blind spots — decisions being made on gut feel when the data exists to make them with confidence.\n\nFor {{industry}} companies, the biggest ones are usually: customer churn prediction, pricing optimization, and operational efficiency.\n\nIf any of those resonate, I'd love to show you how AI analytics solves them.\n\n{{yourName}}`
+          },
+          {
+            subject: "Free data audit for {{company}}",
+            body: `Hi {{firstName}},\n\nI'll make this easy — we offer a free 30-minute data audit where we look at what data {{company}} has, identify the top 3 insights hiding in it, and show you what an AI analytics system would deliver.\n\nYou walk away with actionable insights whether you work with us or not.\n\nWorth it?\n\n{{yourName}}`
+          },
+          {
+            subject: "{{firstName}}, final thought",
+            body: `Hi {{firstName}},\n\nLast note from me. If {{company}} is making any decisions based on manual reports, spreadsheets, or gut instinct — there's a better way.\n\nOur AI analytics systems deliver real-time insights, predictions, and recommendations. For {{industry}} companies, this typically means:\n\n• 15-25% improvement in operational efficiency\n• Early warning on churn and revenue risks\n• Data-driven pricing and resource allocation\n\nHappy to chat whenever the timing is right.\n\n{{yourName}}`
+          }
+        ],
+        dms: [
+          `Hey {{firstName}} — does {{company}} have data that's not being used to its full potential? We build AI analytics systems for {{industry}} companies that turn raw data into real-time insights and predictions. If data-driven decision making is on your radar, happy to chat.`,
+          `Hi {{firstName}}, curious — how is {{company}} handling data analytics right now? Manual reports? Dashboards nobody checks? We've been helping {{industry}} companies build AI-powered analytics that actually drive decisions. Would love to hear how you're approaching it.`,
+          `{{firstName}} — we help {{industry}} businesses turn their existing data into actionable insights using AI. No expensive BI tools or data science hires needed. If {{company}} is sitting on data that could be working harder for you, let's chat.`
+        ],
+        proposal: `# AI Analytics Proposal for {{company}}\n\n## The Problem\n{{company}} has valuable data across multiple systems, but extracting actionable insights requires significant manual effort and specialized skills.\n\n## The Solution\nAn AI-powered analytics system that connects your data sources, identifies patterns, and delivers real-time insights and predictions.\n\n## What You Get\n- AI analytics dashboard connecting all your data sources\n- Automated insight generation and anomaly detection\n- Predictive models for key business metrics\n- Natural language query interface (ask questions in plain English)\n- Weekly automated insight reports\n\n## Timeline\n- Week 1: Data source audit & integration planning\n- Week 2-3: System build & model training\n- Week 4: Deployment & team training\n\n## Investment\n{{pricingTier}}\n\n## Guarantee\nIf the system doesn't surface at least 3 actionable insights in the first 30 days that you weren't previously aware of, we'll refund you in full.`,
+        objections: [
+          { objection: "We already have a BI tool", response: "BI tools show you what happened. AI analytics tells you why it happened and what's going to happen next. Think of it as an upgrade — we can even layer on top of your existing tools so nothing goes to waste." },
+          { objection: "Our data is messy", response: "Every company says this, and it's almost never as bad as they think. Part of our service is data cleaning and normalization. We've worked with far messier data than you probably have, and the AI is surprisingly good at finding signal in noise." },
+          { objection: "We don't have enough data", response: "You'd be surprised. If you have 6+ months of sales data, customer data, or operational data, that's usually enough to start generating meaningful insights. We can assess this in a free 30-minute audit." },
+          { objection: "Our team won't use it", response: "That's why we build a natural language interface. Your team doesn't need to learn SQL or navigate complex dashboards. They just ask questions in plain English: 'Why did sales drop last week?' or 'Which customers are likely to churn?' The AI handles the rest." },
+          { objection: "How do we know the insights are accurate?", response: "Every insight comes with a confidence score and the underlying data that supports it. We don't give you black-box predictions — we show you exactly why the AI reached each conclusion. Your team validates everything before acting on it." }
+        ],
+        pricing: {
+          low: "$2,000 - $4,000/month",
+          mid: "$4,000 - $8,000/month",
+          high: "$8,000 - $15,000/month",
+          note: "Starter covers basic dashboarding and 1-2 data sources. Growth adds predictive models and 5+ integrations. Enterprise includes custom models, unlimited sources, and dedicated support."
+        }
+      }
+    };
+
+    // ========== HELPER ==========
+    function fillTemplate(text, vars) {
+      let result = text;
+      Object.entries(vars).forEach(([key, val]) => {
+        result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), val || `[${key}]`);
+      });
+      return result;
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+
+    // ========== COMPONENTS ==========
+    function CopyButton({ text }) {
+      const [copied, setCopied] = useState(false);
+      return (
+        <button
+          className="copy-btn"
+          onClick={() => {
+            copyText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          }}
+        >
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      );
+    }
+
+    function Section({ title, count, children, defaultOpen }) {
+      const [open, setOpen] = useState(defaultOpen || false);
+      return (
+        <div className="output-section">
+          <div className="output-header" onClick={() => setOpen(!open)}>
+            <h3>{title} <span className="count">{count}</span></h3>
+            <span className={`chevron ${open ? 'open' : ''}`}>&#9662;</span>
+          </div>
+          {open && <div className="output-body">{children}</div>}
+        </div>
+      );
+    }
+
+    // ========== MAIN APP ==========
+    function App() {
+      const [step, setStep] = useState('form');
+      const [formData, setFormData] = useState({
+        yourName: '',
+        agencyName: '',
+        service: 'chatbot',
+        targetIndustry: '',
+        idealClient: '',
+        uniqueValue: ''
+      });
+
+      const update = (key, val) => setFormData(prev => ({ ...prev, [key]: val }));
+
+      const canGenerate = formData.yourName && formData.service && formData.targetIndustry;
+
+      const generate = () => {
+        setStep('results');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const vars = {
+        yourName: formData.yourName,
+        firstName: '{{firstName}}',
+        company: '{{company}}',
+        industry: formData.targetIndustry,
+        estimatedCost: '5,000',
+        pricingTier: TEMPLATES[formData.service]?.pricing
+          ? `Starter: ${TEMPLATES[formData.service].pricing.low}\nGrowth: ${TEMPLATES[formData.service].pricing.mid}\nEnterprise: ${TEMPLATES[formData.service].pricing.high}`
+          : ''
+      };
+
+      const template = TEMPLATES[formData.service];
+
+      if (step === 'form') {
+        return (
+          <div>
+            <div className="header">
+              <div className="badge">For AI Agency Founders</div>
+              <h1>OutreachKit</h1>
+              <p>Get a complete cold outreach system for your AI agency — emails, DMs, proposals, pricing, and objection handlers. Ready in 60 seconds.</p>
+            </div>
+            <div className="container">
+              <div className="form-card">
+                <h2>Tell us about your AI agency</h2>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Your name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Tavon"
+                      value={formData.yourName}
+                      onChange={e => update('yourName', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Agency name (optional)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. NexusAI"
+                      value={formData.agencyName}
+                      onChange={e => update('agencyName', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>What AI service do you offer?</label>
+                  <select value={formData.service} onChange={e => update('service', e.target.value)}>
+                    <option value="chatbot">AI Chatbot / Customer Support</option>
+                    <option value="automation">AI Workflow Automation</option>
+                    <option value="content">AI Content Creation</option>
+                    <option value="analytics">AI Data Analytics / Insights</option>
+                  </select>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Target industry</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Real Estate, E-commerce, Healthcare"
+                      value={formData.targetIndustry}
+                      onChange={e => update('targetIndustry', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Ideal client title (optional)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. CEO, Head of Operations"
+                      value={formData.idealClient}
+                      onChange={e => update('idealClient', e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>What makes your service unique? (optional)</label>
+                  <textarea
+                    placeholder="e.g. We guarantee 60% ticket reduction in 30 days or your money back"
+                    value={formData.uniqueValue}
+                    onChange={e => update('uniqueValue', e.target.value)}
+                  />
+                </div>
+                <button className="btn btn-primary" onClick={generate} disabled={!canGenerate}>
+                  Generate My Outreach System
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ========== RESULTS ==========
+      return (
+        <div>
+          <div className="header" style={{ paddingBottom: '20px' }}>
+            <h1 style={{ fontSize: '32px' }}>Your Outreach System</h1>
+            <p>Customized for {formData.agencyName || 'your agency'} — {template.label} for {formData.targetIndustry}</p>
+            <div style={{ marginTop: '16px' }}>
+              <button className="btn btn-secondary" onClick={() => setStep('form')} style={{ width: 'auto', padding: '10px 20px' }}>
+                ← Edit Inputs
+              </button>
+            </div>
+          </div>
+          <div className="container">
+            <Section title="Cold Email Sequence" count={`${template.emails.length} emails`} defaultOpen={true}>
+              {template.emails.map((email, i) => {
+                const subject = fillTemplate(email.subject, vars);
+                const body = fillTemplate(email.body, vars);
+                const fullText = `Subject: ${subject}\n\n${body}`;
+                return (
+                  <div className="output-item" key={i}>
+                    <CopyButton text={fullText} />
+                    <h4>Email {i + 1}</h4>
+                    <div className="subject-line">Subject: {subject}</div>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{body}</p>
+                  </div>
+                );
+              })}
+            </Section>
+
+            <Section title="LinkedIn DM Scripts" count={`${template.dms.length} scripts`}>
+              {template.dms.map((dm, i) => {
+                const text = fillTemplate(dm, vars);
+                return (
+                  <div className="output-item" key={i}>
+                    <CopyButton text={text} />
+                    <h4>DM Script {i + 1}</h4>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{text}</p>
+                  </div>
+                );
+              })}
+            </Section>
+
+            <Section title="Proposal Template" count="1 template">
+              {(() => {
+                const text = fillTemplate(template.proposal, vars);
+                return (
+                  <div className="output-item">
+                    <CopyButton text={text} />
+                    <h4>Client Proposal</h4>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{text}</p>
+                  </div>
+                );
+              })()}
+            </Section>
+
+            <Section title="Objection Handlers" count={`${template.objections.length} responses`}>
+              {template.objections.map((obj, i) => (
+                <div className="output-item" key={i}>
+                  <CopyButton text={`Objection: "${obj.objection}"\n\nResponse: ${obj.response}`} />
+                  <h4>"{obj.objection}"</h4>
+                  <p>{obj.response}</p>
+                </div>
+              ))}
+            </Section>
+
+            <Section title="Pricing Framework" count="3 tiers">
+              <div className="output-item">
+                <CopyButton text={`Starter: ${template.pricing.low}\nGrowth: ${template.pricing.mid}\nEnterprise: ${template.pricing.high}\n\n${template.pricing.note}`} />
+                <h4>Recommended Pricing Tiers</h4>
+                <ul>
+                  <li><strong>Starter:</strong> {template.pricing.low}</li>
+                  <li><strong>Growth:</strong> {template.pricing.mid}</li>
+                  <li><strong>Enterprise:</strong> {template.pricing.high}</li>
+                </ul>
+                <p style={{ marginTop: '12px', color: 'var(--text-dim)', fontSize: '13px' }}>{template.pricing.note}</p>
+              </div>
+            </Section>
+          </div>
+          <div className="footer">
+            OutreachKit — Built for AI agency founders who'd rather close deals than write emails.
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
